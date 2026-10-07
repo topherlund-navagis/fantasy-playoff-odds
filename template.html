@@ -1,0 +1,532 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>True American Playoff Odds</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800;1,900&family=Barlow:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: Sunday-broadcast graphics package. Navy field, red slanted chyrons, white heavy italic type.
+   One deliberate dark look. Nothing scrolls sideways: wide grids switch to compact forms on small screens. */
+:root {
+  color-scheme: dark;
+  --bg: #04122b;
+  --panel: #0a1d42;
+  --panel2: #0f2a5e;
+  --fg: #ffffff;
+  --muted: #a7b6d4;
+  --faint: #6b7ea6;
+  --line: #1b3468;
+  --red: #d50a0a;
+  --silver: #c9d1dc;
+  --pos: #4c97ee;
+  --neg: #ff5c5c;
+  --mid: #18305f;
+  --win: #43d17f;
+  --loss: #ff6b6b;
+  --heat: 76, 151, 238;
+  --display: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --body: "Barlow", "Segoe UI", system-ui, sans-serif;
+  --mono: "Roboto Mono", ui-monospace, Consolas, monospace;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body {
+  margin: 0; overflow-x: hidden;
+  background: var(--bg);
+  background-image: radial-gradient(1200px 500px at 50% -120px, #12357a 0%, transparent 70%),
+    repeating-linear-gradient(90deg, transparent 0 119px, rgba(255,255,255,.025) 119px 120px);
+  color: var(--fg); font: 16px/1.5 var(--body); padding-inline: 16px; padding-block: 0 64px;
+}
+.wrap { max-width: 1260px; margin: 0 auto; display: grid; gap: 44px; }
+h1, h2, h3 { font-family: var(--display); line-height: 1; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(2.5rem, 8vw, 5.2rem); font-weight: 900; font-style: italic; text-transform: uppercase; letter-spacing: -.01em; }
+h2 { display: flex; align-items: stretch; font-size: 1.7rem; font-weight: 800; font-style: italic; text-transform: uppercase; letter-spacing: .01em; }
+h2::before { content: ""; flex: none; width: 14px; margin-right: 14px; background: var(--red); transform: skewX(-18deg); }
+h3 { font-size: 1.35rem; font-weight: 800; font-style: italic; text-transform: uppercase; }
+p { margin: 0; max-width: 70ch; }
+b { font-weight: 700; }
+.eyebrow { justify-self: start; font: 800 italic .95rem/1.1 var(--display); letter-spacing: .1em; text-transform: uppercase; color: #fff; background: var(--red); padding: 7px 18px 6px; clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%); }
+.lede { color: var(--silver); font-size: 1.08rem; }
+header { display: grid; gap: 14px; padding-block: 40px 22px; border-bottom: 4px solid var(--red); position: relative; }
+header::after { content: ""; position: absolute; left: 0; right: 0; bottom: -10px; height: 3px; background: var(--fg); }
+.stripe { display: flex; gap: 6px; }
+.stripe i { width: 34px; height: 6px; background: var(--fg); transform: skewX(-30deg); }
+.stripe i:nth-child(2) { background: var(--red); }
+section { display: grid; gap: 14px; min-width: 0; }
+.note { color: var(--muted); font-size: .94rem; }
+
+/* week selector */
+.weekbar { position: sticky; top: 0; z-index: 5; margin-inline: -16px; padding: 10px 16px; background: rgba(4, 18, 43, .95); border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 8px 12px; flex-wrap: wrap; }
+.weekbar span { font: 700 .85rem/1 var(--display); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.weeks { display: flex; gap: 6px; flex-wrap: wrap; }
+.weeks button { font: 800 italic 1rem/1 var(--display); text-transform: uppercase; padding: 8px 14px; border: 0; background: var(--panel2); color: var(--fg); cursor: pointer; clip-path: polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%); }
+.weeks button:hover { background: #17397a; }
+.weeks button[aria-pressed="true"] { background: var(--red); }
+button:focus-visible, select:focus-visible, [data-id]:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+
+/* boxes and tables: tables always fit their box; long names wrap */
+.box { border: 1px solid var(--line); background: var(--panel); box-shadow: 0 10px 30px rgba(0,0,0,.35); min-width: 0; }
+table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
+th, td { padding: 9px 10px; text-align: right; border-bottom: 1px solid var(--line); }
+td { white-space: nowrap; }
+td.wrap { white-space: normal; overflow-wrap: anywhere; }
+thead th { font: 700 .84rem/1.15 var(--display); letter-spacing: .08em; text-transform: uppercase; color: var(--fg); background: var(--panel2); vertical-align: bottom; border-bottom: 3px solid var(--red); }
+th.l, td.l { text-align: left; }
+tbody tr:nth-child(even) td { background: rgba(255,255,255,.025); }
+tbody tr:last-child td { border-bottom: 0; }
+tr.cut td { border-bottom: 3px solid var(--red); }
+.rank { font: 900 italic 1.7rem/1 var(--display); color: var(--faint); width: 2em; text-align: center; }
+tr.in .rank, .card.in .rank { color: var(--fg); }
+.team { font: 800 1.08rem/1.15 var(--display); text-transform: uppercase; letter-spacing: .01em; }
+.owner { display: block; font: 500 .78rem/1.3 var(--body); color: var(--muted); text-transform: none; letter-spacing: 0; }
+.bar { position: relative; width: 100px; display: inline-block; vertical-align: middle; height: 18px; background: var(--mid); transform: skewX(-18deg); }
+.bar i { position: absolute; inset: 0 auto 0 0; background: linear-gradient(90deg, #a10808, var(--red)); }
+.barv { display: inline-block; width: 3.2em; margin-left: 8px; text-align: right; font: 800 italic 1.15rem/18px var(--display); vertical-align: middle; }
+.pill { display: inline-block; min-width: 3.4em; padding: 1px 7px; font: 500 .8rem/1.5 var(--mono); text-align: center; background: var(--mid); color: var(--fg); }
+.pill.up { box-shadow: inset 0 -3px 0 var(--pos); }
+.pill.down { box-shadow: inset 0 -3px 0 var(--neg); }
+.spark { display: block; margin-left: auto; }
+
+/* tooltips */
+.tipb { display: inline-grid; place-items: center; width: 17px; height: 17px; margin-left: 5px; padding: 0; border: 1px solid var(--muted); border-radius: 50%; background: transparent; color: var(--muted); font: 700 .7rem/1 var(--body); cursor: help; vertical-align: 1px; }
+.tipb:hover, .tipb[aria-expanded="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+#tip { position: fixed; z-index: 20; max-width: min(320px, calc(100vw - 24px)); padding: 12px 14px; background: #fff; color: #0a1d42; font: 500 .9rem/1.45 var(--body); text-align: left; border-top: 4px solid var(--red); box-shadow: 0 12px 32px rgba(0,0,0,.5); pointer-events: none; }
+#tip b { display: block; font: 800 italic 1rem/1.2 var(--display); text-transform: uppercase; margin-bottom: 4px; }
+
+/* ranking: table on wide screens, cards below 1040px */
+.cards { display: none; gap: 2px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr)); background: var(--line); border: 1px solid var(--line); }
+.card { background: var(--panel); padding: 12px 14px; display: grid; grid-template-columns: 2.2em minmax(0, 1fr) auto; gap: 4px 10px; align-items: center; min-width: 0; }
+.card .team { overflow-wrap: anywhere; }
+.card .odds { font: 900 italic 1.7rem/1 var(--display); text-align: right; }
+.card .odds small { display: block; font: 600 .7rem/1.2 var(--body); font-style: normal; color: var(--muted); }
+.card .bar { grid-column: 2 / 4; width: 100%; height: 10px; }
+.card dl { grid-column: 2 / 4; margin: 4px 0 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2px 10px; }
+.card dt { font: 700 .68rem/1.2 var(--display); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+.card dd { margin: 0; font: 500 .85rem/1.3 var(--mono); }
+.card.cutline { box-shadow: inset 0 -3px 0 var(--red); }
+
+/* all-play explainer */
+.explain { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
+.explain div { background: var(--panel); border-top: 4px solid var(--red); padding: 14px 16px; display: grid; gap: 4px; align-content: start; }
+.explain b { font: 900 italic 1.9rem/1 var(--display); }
+.explain span { color: var(--silver); font-size: .92rem; }
+.tag { display: inline-block; margin-top: 4px; padding: 2px 8px; font: 800 italic .78rem/1.3 var(--display); letter-spacing: .05em; text-transform: uppercase; }
+.tag.lucky { background: var(--pos); color: #04122b; }
+.tag.unlucky { background: var(--neg); color: #04122b; }
+.res { font: 500 .82rem/1.3 var(--mono); }
+.res.W { color: var(--win); } .res.L { color: var(--loss); }
+
+/* strip grids (seeds and schedule): name column + 14 equal cells; on phones the name sits above its strip */
+.strip { display: grid; grid-template-columns: minmax(130px, 220px) repeat(var(--n), minmax(0, 1fr)); }
+.strip > * { min-width: 0; border-bottom: 1px solid var(--line); }
+.strip .hd { font: 700 .84rem/1 var(--display); letter-spacing: .06em; text-transform: uppercase; background: var(--panel2); border-bottom: 3px solid var(--red); padding: 10px 2px; text-align: center; }
+.strip .hd.l { text-align: left; padding-left: 12px; }
+.strip .nm { padding: 6px 12px; display: flex; align-items: center; font: 800 1rem/1.1 var(--display); text-transform: uppercase; overflow-wrap: anywhere; }
+.strip .c { height: 34px; display: grid; place-items: center; font: 500 .74rem/1 var(--mono); border-left: 2px solid var(--panel); }
+.strip .c.cut { border-left: 3px solid var(--red); }
+.strip [data-id] { cursor: pointer; }
+.g { display: grid; place-items: center; align-content: center; gap: 2px; height: auto !important; min-height: 46px; padding: 4px 2px; text-align: center; }
+.g .o { display: block; max-width: 100%; font: 500 .66rem/1.1 var(--body); color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.g.W { background: rgba(67, 209, 127, .13); color: var(--win); }
+.g.L { background: rgba(255, 107, 107, .13); color: var(--loss); }
+.g.F { color: var(--silver); }
+.g .s { display: inline; }
+
+/* luck */
+.luck { display: grid; gap: 6px; padding: 18px; }
+.lrow { display: grid; grid-template-columns: minmax(0, 220px) 3.2em minmax(0, 1fr); gap: 10px; align-items: center; }
+.lrow span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 700 .98rem/1.2 var(--display); text-transform: uppercase; }
+.lrow em { font: 500 .8rem/1 var(--mono); font-style: normal; text-align: right; }
+.ltrack { position: relative; height: 20px; }
+.ltrack::before { content: ""; position: absolute; left: 50%; top: -3px; bottom: -3px; width: 2px; background: var(--silver); }
+.ltrack i { position: absolute; top: 2px; height: 16px; }
+.ltrack i.p { left: 50%; background: var(--pos); }
+.ltrack i.n { right: 50%; background: var(--neg); }
+.laxis { display: grid; grid-template-columns: minmax(0, 220px) 3.2em minmax(0, 1fr); gap: 10px; font-size: .78rem; color: var(--muted); }
+.laxis div { display: flex; justify-content: space-between; gap: 8px; }
+
+/* team detail */
+.teamhead { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+select { font: 800 italic 1.05rem/1.1 var(--display); text-transform: uppercase; color: var(--fg); background: var(--panel2); border: 0; border-bottom: 3px solid var(--red); padding: 10px 12px; max-width: 100%; }
+.detail { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); }
+.detail > div { min-width: 0; display: grid; gap: 10px; align-content: start; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 130px), 1fr)); gap: 2px; background: var(--line); border-top: 4px solid var(--red); }
+.stats div { background: var(--panel); padding: 12px 16px; display: grid; gap: 2px; }
+.stats b { font: 900 italic 2.1rem/1 var(--display); }
+.stats span { font: 700 .78rem/1.2 var(--display); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.method { background: var(--panel); border: 1px solid var(--line); border-top: 4px solid var(--red); padding: 22px; display: grid; gap: 12px; }
+.method ul { margin: 0; padding-left: 1.2em; display: grid; gap: 8px; max-width: 74ch; color: var(--silver); }
+
+@media (max-width: 1279px) { .c-wide { display: none; } }
+@media (max-width: 1099px) { .g .o, .g .s { display: none; } .g { min-height: 34px; } }
+@media (max-width: 1039px) { #rankbox { display: none; } .cards { display: grid; } }
+@media (max-width: 700px) {
+  .wrap { gap: 34px; }
+  header { padding-block: 24px 18px; }
+  h2 { font-size: 1.45rem; }
+  th, td { padding: 8px 6px; }
+  .hide-sm { display: none; }
+  .strip { grid-template-columns: repeat(var(--n), minmax(0, 1fr)); }
+  .strip .nm, .strip .hd.l { grid-column: 1 / -1; border-bottom: 0; padding: 8px 6px 2px; }
+  .strip .hd.l { display: none; }
+  .strip .c { height: 28px; font-size: .62rem; border-left-width: 1px; }
+  .stats b { font-size: 1.7rem; }
+  .lrow, .laxis { grid-template-columns: minmax(0, 110px) 3em minmax(0, 1fr); gap: 8px; }
+  .lrow span { font-size: .85rem; }
+}
+@media (prefers-reduced-motion: no-preference) { .bar i, .ltrack i { transition: width .4s ease; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow" id="kicker"></div>
+    <h1 id="title"></h1>
+    <div class="stripe" aria-hidden="true"><i></i><i></i><i></i></div>
+    <p class="lede" id="lede"></p>
+  </header>
+
+  <div class="weekbar">
+    <span>Standings after</span>
+    <div class="weeks" id="weeks" role="group" aria-label="Choose a week"></div>
+  </div>
+
+  <section>
+    <h2>Power ranking by playoff odds</h2>
+    <p class="note">Ranked by chance of finishing in the top <span class="pt"></span>. Tap or hover the <b>?</b> next to a stat for what it means.</p>
+    <div class="box" id="rankbox"><table id="rank"></table></div>
+    <div class="cards" id="cards"></div>
+  </section>
+
+  <section>
+    <h2 id="aptitle"></h2>
+    <p class="note" id="apnote"></p>
+    <div class="explain" id="apexplain"></div>
+    <div class="box"><table id="aptable"></table></div>
+  </section>
+
+  <section>
+    <h2>Where each team finishes</h2>
+    <p class="note">Share of simulated seasons ending in each seed, in percent. The red line marks the playoff cut. Seeds go by wins, then points for.</p>
+    <div class="box strip" id="heat"></div>
+  </section>
+
+  <section>
+    <h2>Luck so far</h2>
+    <p class="note">Actual wins minus the wins each team's scores would earn against an average schedule. The main cause is points against, which a team can't control: in fantasy football your opponent can't affect your score.</p>
+    <div class="box luck" id="luck"></div>
+  </section>
+
+  <section>
+    <h2>Schedule and results</h2>
+    <p class="note">Played weeks show W or L. Later weeks show the chance of winning that game, in percent. Select a team to open its full schedule below.</p>
+    <div class="box strip" id="sched"></div>
+  </section>
+
+  <section id="teamsec">
+    <div class="teamhead">
+      <h2>Team detail</h2>
+      <select id="teamsel" aria-label="Choose a team"></select>
+    </div>
+    <div id="detail"></div>
+  </section>
+
+  <section class="method">
+    <h2>Method</h2>
+    <ul id="method"></ul>
+  </section>
+</div>
+<div id="tip" role="tooltip" hidden></div>
+
+<script id="data" type="application/json">__DATA__</script>
+<script>
+const D = JSON.parse(document.getElementById("data").textContent);
+const L = D.league, M = D.model;
+const T = Object.fromEntries(D.teams.map(t => [t.id, t]));
+const IDX = Object.fromEntries(D.teams.map((t, i) => [t.id, i]));
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const pct = (x, d = 0) => (x * 100).toFixed(d) + "%";
+const f1 = x => x.toFixed(1);
+const sign = x => (x > 0 ? "+" : x < 0 ? "−" : "") + Math.abs(x).toFixed(1);
+const rec = s => `${s.w}-${s.l}${s.t ? "-" + s.t : ""}`;
+
+let week = L.done_week;
+let teamId = null;
+const snap = () => D.snapshots[week];
+const S = id => snap().teams[id];
+
+// Normal CDF via erf approximation (Abramowitz & Stegun 7.1.26)
+function ncdf(z) {
+  const t = 1 / (1 + 0.3275911 * Math.abs(z) / Math.SQRT2);
+  const y = 1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-z * z / 2);
+  return z >= 0 ? (1 + y) / 2 : (1 - y) / 2;
+}
+const winProb = (a, b) => ncdf((S(a).strength - S(b).strength) / Math.sqrt(2 * M.within_sd ** 2 + 2 * snap().post_sd ** 2));
+const results = (id, k) => D.games.filter(g => g.week <= k && (g.a === id || g.b === id)).map(g => {
+  const mine = g.a === id, pf = mine ? g.a_pts : g.b_pts, pa = mine ? g.b_pts : g.a_pts;
+  return { week: g.week, opp: mine ? g.b : g.a, pf, pa, res: pf > pa ? "W" : pf < pa ? "L" : "T" };
+});
+const remaining = (id, k) => {
+  const out = [];
+  for (let w = k + 1; w <= L.last_week; w++) for (const [a, b] of D.schedule[w]) if (a === id || b === id) out.push({ week: w, opp: a === id ? b : a });
+  return out;
+};
+
+// ---- tooltips ----
+const TIPS = {
+  allplay: ["All-play", () => `The record a team would have if it played all ${L.teams - 1} other teams every week. Each week it beats every team that scored less and loses to every team that scored more. This removes the luck of who it happened to face.`],
+  luck: ["Luck", () => `Actual wins minus the wins its scores would earn against an average schedule (all-play win rate × games played). +2.0 means two more wins than its scoring earned.`],
+  strength: ["Strength", () => `Expected points per week from here on. It's the team's average score pulled toward the league average (${f1(M.league_mean)}), because a few weeks is a small sample. After week ${week}, ${pct(snap().shrink)} of a team's distance from average is treated as real. The simulation uses this number.`],
+  sos: ["Remaining schedule", () => `Average Strength of the opponents still to play. Higher is harder. Blue underline: easier than most. Red underline: harder than most.`],
+  proj: ["Projected record", () => `Average final regular-season record across ${L.sims.toLocaleString()} simulated seasons.`],
+  odds: ["Playoff odds", () => `Share of ${L.sims.toLocaleString()} simulated seasons in which the team finishes in the top ${L.playoff_teams}. Seeds go by wins, then points for.`],
+  bye: ["Top-2 bye", () => `Share of simulated seasons in which the team finishes as seed 1 or 2, which skip the first playoff round.`],
+  trend: ["Odds by week", () => `Playoff odds after each week so far, from week 1 on the left to week ${week} on the right. The faint line is 50%.`],
+  bench: ["Points left on bench", () => `Best possible lineup score each week minus the score the team actually started, added up. Shows lineup decisions, not roster strength.`],
+  eff: ["Lineup efficiency", () => `Points scored as a share of the best possible lineup score.`],
+};
+const tipBtn = k => `<button type="button" class="tipb" data-tip="${k}" aria-label="What is ${TIPS[k][0]}?" aria-expanded="false">?</button>`;
+const tipEl = document.getElementById("tip");
+let tipOwner = null;
+function showTip(btn) {
+  const [title, body] = TIPS[btn.dataset.tip];
+  tipEl.innerHTML = `<b>${esc(title)}</b>${esc(body())}`;
+  tipEl.hidden = false;
+  const r = btn.getBoundingClientRect(), w = tipEl.offsetWidth, h = tipEl.offsetHeight;
+  const left = Math.max(12, Math.min(r.left + r.width / 2 - w / 2, innerWidth - w - 12));
+  const top = r.bottom + 8 + h > innerHeight ? Math.max(8, r.top - h - 8) : r.bottom + 8;
+  tipEl.style.left = left + "px"; tipEl.style.top = top + "px";
+  if (tipOwner && tipOwner !== btn) tipOwner.setAttribute("aria-expanded", "false");
+  tipOwner = btn; btn.setAttribute("aria-expanded", "true");
+}
+function hideTip() { tipEl.hidden = true; if (tipOwner) tipOwner.setAttribute("aria-expanded", "false"); tipOwner = null; }
+document.addEventListener("click", e => {
+  const b = e.target.closest(".tipb");
+  if (b) { e.stopPropagation(); tipOwner === b ? hideTip() : showTip(b); return; }
+  hideTip();
+}, true);
+document.addEventListener("mouseover", e => { const b = e.target.closest(".tipb"); if (b && matchMedia("(hover: hover)").matches) showTip(b); });
+document.addEventListener("mouseout", e => { if (e.target.closest(".tipb") && matchMedia("(hover: hover)").matches) hideTip(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape") hideTip(); });
+addEventListener("scroll", hideTip, { passive: true });
+
+// ---- sparkline of playoff odds by week ----
+function spark(id, w = 74, h = 24) {
+  const vals = []; for (let k = 1; k <= week; k++) vals.push(D.snapshots[k].teams[id].playoff_pct);
+  const x = i => vals.length === 1 ? w / 2 : 4 + i * (w - 8) / (vals.length - 1);
+  const y = v => 4 + (1 - v) * (h - 8);
+  const pts = vals.map((v, i) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
+  const last = vals.length - 1;
+  return `<svg class="spark" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="Playoff odds by week: ${vals.map(v => pct(v)).join(", ")}">
+    <line x1="0" x2="${w}" y1="${y(0.5)}" y2="${y(0.5)}" stroke="#1b3468" stroke-width="1"/>
+    <polyline points="${pts}" fill="none" stroke="#c9d1dc" stroke-width="2" stroke-linejoin="round"/>
+    <circle cx="${x(last)}" cy="${y(vals[last])}" r="3.5" fill="#d50a0a" stroke="#0a1d42" stroke-width="1.5"/></svg>`;
+}
+
+// ---- renderers ----
+function order() { return [...D.teams].sort((a, b) => S(b.id).playoff_pct - S(a.id).playoff_pct); }
+
+function renderHeader() {
+  document.getElementById("kicker").textContent = `${L.season} · ${L.teams} teams · PPR · ${L.playoff_teams} make the playoffs`;
+  document.getElementById("title").textContent = L.name;
+  document.getElementById("lede").textContent = week === L.done_week
+    ? `After week ${week} of ${L.last_week}. Odds come from ${L.sims.toLocaleString()} simulations of the remaining ${L.last_week - week} weeks using the real schedule.`
+    : `Looking back: the standings and odds as they were after week ${week}. The latest finished week is ${L.done_week}.`;
+  document.querySelectorAll(".pt").forEach(e => e.textContent = L.playoff_teams);
+  document.getElementById("weeks").innerHTML = Array.from({ length: L.done_week }, (_, i) => i + 1)
+    .map(k => `<button type="button" data-week="${k}" aria-pressed="${k === week}">Wk ${k}</button>`).join("");
+}
+
+function renderRanking() {
+  const ord = order();
+  const sv = D.teams.map(t => S(t.id).sos_future).filter(v => v != null);
+  const sosMean = sv.reduce((a, b) => a + b, 0) / (sv.length || 1);
+  const sosCls = v => v == null ? "" : v - sosMean > 0.8 ? "down" : v - sosMean < -0.8 ? "up" : "";
+  let h = `<thead><tr><th class="l"></th><th class="l">Team</th><th>Record</th><th>Points for</th><th class="c-wide">Points against</th>
+    <th>All-play${tipBtn("allplay")}</th><th>Luck${tipBtn("luck")}</th><th class="c-wide">Strength${tipBtn("strength")}</th><th>Remaining SOS${tipBtn("sos")}</th>
+    <th class="c-wide">Projected${tipBtn("proj")}</th><th class="l">Playoff odds${tipBtn("odds")}</th><th>Top-2 bye${tipBtn("bye")}</th><th>Trend${tipBtn("trend")}</th></tr></thead><tbody>`;
+  let c = "";
+  ord.forEach((t, i) => {
+    const s = S(t.id);
+    const luckCls = s.luck > 0.5 ? "up" : s.luck < -0.5 ? "down" : "";
+    const sos = s.sos_future == null ? "—" : `<span class="pill ${sosCls(s.sos_future)}">${f1(s.sos_future)}</span>`;
+    const inCls = i < L.playoff_teams ? "in" : "";
+    h += `<tr class="${inCls}${i === L.playoff_teams - 1 ? " cut" : ""}">
+      <td class="rank">${i + 1}</td>
+      <td class="l team wrap">${esc(t.name)}<span class="owner">${esc(t.owner)}</span></td>
+      <td>${rec(s)}</td><td>${f1(s.pf)}</td><td class="c-wide">${f1(s.pa)}</td>
+      <td>${s.ap_w}-${s.ap_l}</td>
+      <td><span class="pill ${luckCls}">${sign(s.luck)}</span></td>
+      <td class="c-wide">${f1(s.strength)}</td><td>${sos}</td>
+      <td class="c-wide">${s.proj_w.toFixed(1)}-${(L.last_week - s.proj_w).toFixed(1)}</td>
+      <td class="l"><div class="bar"><i style="width:${s.playoff_pct * 100}%"></i></div><span class="barv">${pct(s.playoff_pct)}</span></td>
+      <td>${pct(s.bye_pct)}</td><td>${spark(t.id)}</td></tr>`;
+    c += `<div class="card ${inCls}${i === L.playoff_teams - 1 ? " cutline" : ""}">
+      <div class="rank">${i + 1}</div>
+      <div class="team">${esc(t.name)}<span class="owner">${esc(t.owner)} · ${rec(s)} · ${f1(s.pf)} pts</span></div>
+      <div class="odds">${pct(s.playoff_pct)}<small>playoffs</small></div>
+      <div class="bar"><i style="width:${s.playoff_pct * 100}%"></i></div>
+      <dl>
+        <dt>All-play${tipBtn("allplay")}</dt><dt>Luck${tipBtn("luck")}</dt><dt>Sched${tipBtn("sos")}</dt><dt>Bye${tipBtn("bye")}</dt>
+        <dd>${s.ap_w}-${s.ap_l}</dd><dd>${sign(s.luck)}</dd><dd>${s.sos_future == null ? "—" : f1(s.sos_future)}</dd><dd>${pct(s.bye_pct)}</dd>
+      </dl></div>`;
+  });
+  document.getElementById("rank").innerHTML = h + "</tbody>";
+  document.getElementById("cards").innerHTML = c;
+}
+
+function renderAllPlay() {
+  const sc = D.scores[week - 1];
+  const rows = D.teams.map(t => {
+    const me = sc[IDX[t.id]];
+    return { t, me, beat: sc.filter(x => x < me).length, lost: sc.filter(x => x > me).length,
+             r: results(t.id, week).find(r => r.week === week) };
+  }).sort((a, b) => b.me - a.me);
+  const half = (L.teams - 1) / 2;
+  const lucky = rows.filter(x => x.r.res === "W" && x.beat < half), unlucky = rows.filter(x => x.r.res === "L" && x.beat > half);
+  const top = rows[0], ex = rows[4];
+  document.getElementById("aptitle").textContent = `Week ${week} all-play`;
+  document.getElementById("apnote").innerHTML =
+    `In a real week you play one opponent. All-play compares your score with all ${L.teams - 1} other scores from the same week instead. You beat every team that scored less and lose to every team that scored more. Add up the weeks and you get the <b>All-play</b> stat in the ranking, which shows how a team would do without the luck of who it happened to play.`;
+  document.getElementById("apexplain").innerHTML = `
+    <div><b>${top.beat}-${top.lost}</b><span>${esc(top.t.name)} had the top score (${f1(top.me)}), so it beat everyone.</span></div>
+    <div><b>${ex.beat}-${ex.lost}</b><span>${esc(ex.t.name)} had the 5th-best score (${f1(ex.me)}): ${ex.beat} teams below it, ${ex.lost} above.</span></div>
+    <div><b>${lucky.length} lucky, ${unlucky.length} unlucky</b><span>Bottom-half scores that still won, and top-half scores that still lost. The red line splits the top and bottom half.</span></div>`;
+  let h = `<thead><tr><th class="l">Team</th><th>Score</th><th>All-play</th><th class="l">Real result</th></tr></thead><tbody>`;
+  rows.forEach((x, i) => {
+    const tag = lucky.includes(x) ? `<span class="tag lucky">Lucky win</span>` : unlucky.includes(x) ? `<span class="tag unlucky">Unlucky loss</span>` : "";
+    h += `<tr class="${i === Math.floor(L.teams / 2) - 1 ? "cut" : ""}"><td class="l team wrap">${i + 1}. ${esc(x.t.name)}</td><td>${f1(x.me)}</td><td>${x.beat}-${x.lost}</td>
+      <td class="l wrap"><span class="res ${x.r.res}">${x.r.res} ${f1(x.r.pf)}–${f1(x.r.pa)}</span><span class="owner">vs ${esc(T[x.r.opp].name)}</span>${tag}</td></tr>`;
+  });
+  document.getElementById("aptable").innerHTML = h + "</tbody>";
+}
+
+function stripHead(label, cells, cutAt) {
+  return `<div class="hd l">${label}</div>` + cells.map((c, k) => `<div class="hd${k === cutAt ? " c cut" : ""}" style="height:auto">${c}</div>`).join("");
+}
+
+function renderHeat() {
+  const el = document.getElementById("heat");
+  el.style.setProperty("--n", L.teams);
+  let h = stripHead("Team", Array.from({ length: L.teams }, (_, k) => k + 1), L.playoff_teams);
+  order().forEach(t => {
+    h += `<div class="nm">${esc(t.name)}</div>`;
+    S(t.id).seed_dist.forEach((p, k) => {
+      const a = Math.min(1, p / 0.35);
+      h += `<div class="c${k === L.playoff_teams ? " cut" : ""}" title="${esc(t.name)}, seed ${k + 1}: ${pct(p, 1)}"
+        style="background:rgba(var(--heat),${(0.06 + a * 0.94).toFixed(3)});color:${a > 0.55 ? "#04122b" : "var(--fg)"}">${p >= 0.03 ? Math.round(p * 100) : ""}</div>`;
+    });
+  });
+  el.innerHTML = h;
+}
+
+function renderLuck() {
+  const by = [...D.teams].sort((a, b) => S(b.id).luck - S(a.id).luck);
+  const max = Math.max(1, Math.ceil(Math.max(...D.teams.map(t => Math.abs(S(t.id).luck)))));
+  let h = "";
+  by.forEach(t => {
+    const s = S(t.id), w = Math.abs(s.luck) / max * 50;
+    h += `<div class="lrow" title="${esc(t.name)}: ${rec(s)} actual, ${s.exp_wins.toFixed(1)} expected wins"><span>${esc(t.name)}</span><em>${sign(s.luck)}</em>
+      <div class="ltrack"><i class="${s.luck >= 0 ? "p" : "n"}" style="width:${w}%"></i></div></div>`;
+  });
+  h += `<div class="laxis"><span></span><span></span><div><span>−${max} unlucky</span><span>0</span><span>+${max} lucky</span></div></div>`;
+  document.getElementById("luck").innerHTML = h;
+}
+
+function renderSchedule() {
+  const el = document.getElementById("sched");
+  el.style.setProperty("--n", L.last_week);
+  let h = stripHead("Team", Array.from({ length: L.last_week }, (_, k) => `<span class="hide-sm">Wk </span>${k + 1}`), -1);
+  order().forEach(t => {
+    h += `<div class="nm" data-id="${t.id}" tabindex="0" role="button">${esc(t.name)}</div>`;
+    results(t.id, week).forEach(r => {
+      h += `<div class="c g ${r.res}" data-id="${t.id}" title="Week ${r.week}: ${esc(t.name)} ${f1(r.pf)} – ${f1(r.pa)} ${esc(T[r.opp].name)}"><span>${r.res}<span class="s"> ${f1(r.pf)}</span></span><span class="o">${esc(T[r.opp].name)}</span></div>`;
+    });
+    remaining(t.id, week).forEach(r => {
+      const p = winProb(t.id, r.opp);
+      h += `<div class="c g F" data-id="${t.id}" title="Week ${r.week} vs ${esc(T[r.opp].name)}: ${pct(p)} win chance"><span>${Math.round(p * 100)}</span><span class="o">${esc(T[r.opp].name)}</span></div>`;
+    });
+  });
+  el.innerHTML = h;
+}
+
+function renderTeam() {
+  const t = T[teamId], s = S(teamId), ord = order();
+  document.getElementById("teamsel").innerHTML = ord.map(o => `<option value="${o.id}"${o.id === teamId ? " selected" : ""}>${esc(o.name)}</option>`).join("");
+  const res = results(teamId, week);
+  const maxSum = D.maxpts.slice(0, week).reduce((a, w) => a + w[IDX[teamId]], 0);
+  const posOrder = ["QB", "RB", "WR", "TE", "K", "DEF"], pos = {};
+  const players = D.players.filter(p => p.roster === teamId).map(p => {
+    let st = 0, bn = 0, n = 0;
+    for (const [w, [pts, started]] of Object.entries(p.weeks)) if (+w <= week) { if (started) { st += pts; n++; pos[p.pos] = (pos[p.pos] || 0) + pts; } else bn += pts; }
+    return { ...p, st, bn, n };
+  }).filter(p => p.st + p.bn > 0 || p.n > 0).sort((a, b) => (b.st + b.bn) - (a.st + a.bn));
+  const posTot = posOrder.reduce((a, p) => a + (pos[p] || 0), 0);
+  const odds = Array.from({ length: week }, (_, i) => `Wk ${i + 1}: ${pct(D.snapshots[i + 1].teams[teamId].playoff_pct)}`).join(" · ");
+  const wins = Object.entries(s.wins_dist).filter(([, p]) => p >= 0.01).map(([w, p]) => `${w}: ${pct(p)}`).join(" · ");
+  const rem = remaining(teamId, week);
+  document.getElementById("detail").innerHTML = `
+    <div style="display:grid;gap:14px">
+      <p class="owner" style="font-size:.95rem">${esc(t.owner)} · #${ord.indexOf(t) + 1} in playoff odds after week ${week}</p>
+      <div class="stats">
+        <div><b>${rec(s)}</b><span>Record</span></div>
+        <div><b>${pct(s.playoff_pct)}</b><span>Playoff odds${tipBtn("odds")}</span></div>
+        <div><b>${pct(s.bye_pct)}</b><span>Top-2 bye${tipBtn("bye")}</span></div>
+        <div><b>${s.avg_seed.toFixed(1)}</b><span>Average seed</span></div>
+        <div><b>${f1(s.pf / week)}</b><span>Points per week</span></div>
+        <div><b>${f1(maxSum - s.pf)}</b><span>Left on bench${tipBtn("bench")}</span></div>
+        <div><b>${pct(s.pf / maxSum)}</b><span>Lineup efficiency${tipBtn("eff")}</span></div>
+      </div>
+      <p class="note">Playoff odds by week: ${odds}.</p>
+      <p class="note">Final win total in simulations: ${wins}.</p>
+    </div>
+    <div class="detail" style="margin-top:16px">
+      <div><h3>Results</h3><div class="box"><table><thead><tr><th class="l">Wk</th><th class="l">Opponent</th><th>For</th><th>Agst</th><th></th></tr></thead><tbody>
+        ${res.map(r => `<tr><td class="l">${r.week}</td><td class="l wrap">${esc(T[r.opp].name)}</td><td>${f1(r.pf)}</td><td>${f1(r.pa)}</td><td class="res ${r.res}">${r.res}</td></tr>`).join("")}</tbody></table></div>
+        <h3>Starter points by position</h3><div class="box"><table><thead><tr><th class="l">Position</th><th>Points</th><th>Share</th></tr></thead><tbody>
+        ${posOrder.map(p => `<tr><td class="l">${p}</td><td>${f1(pos[p] || 0)}</td><td>${pct((pos[p] || 0) / posTot)}</td></tr>`).join("")}</tbody></table></div></div>
+      <div><h3>Players</h3><p class="note">Everyone on the roster in a played week, by total points. Includes players since dropped.</p>
+        <div class="box"><table><thead><tr><th class="l">Player</th><th>Started</th><th>Bench</th><th>Starts</th></tr></thead><tbody>
+        ${players.slice(0, 18).map(p => `<tr><td class="l wrap">${esc(p.name)} <span class="owner" style="display:inline">${esc(p.pos || "")} · ${esc(p.nfl)}</span></td><td>${f1(p.st)}</td><td>${f1(p.bn)}</td><td>${p.n}</td></tr>`).join("")}</tbody></table></div></div>
+      <div><h3>Remaining schedule</h3><div class="box"><table><thead><tr><th class="l">Wk</th><th class="l">Opponent</th><th>Opp. strength</th><th>Win chance</th></tr></thead><tbody>
+        ${rem.map(r => `<tr><td class="l">${r.week}</td><td class="l wrap">${esc(T[r.opp].name)}</td><td>${f1(S(r.opp).strength)}</td><td>${pct(winProb(teamId, r.opp))}</td></tr>`).join("")}</tbody></table></div></div>
+    </div>`;
+}
+
+function renderMethod() {
+  document.getElementById("method").innerHTML = [
+    `Data: Sleeper's public league feed. The page rebuilds every Tuesday morning. Each rebuild checks records, points for, points against and best-possible-lineup points against Sleeper's standings for all ${L.teams} teams, and stops if anything doesn't match.`,
+    `Strength: each team's average weekly score, pulled toward the league average of ${f1(M.league_mean)}. Weekly scores swing a lot (typical swing ±${f1(M.within_sd)} points) compared with the gap between teams (about ±${f1(M.between_sd)}). Those two spreads are measured from every finished week and used for every week's snapshot, because one week alone can't separate them.`,
+    `Simulation: each of ${L.sims.toLocaleString()} runs first draws a "true" level for every team around its strength (we don't know it exactly yet), then a score for every remaining game. Seeds go by wins, then points for. Seeds 1 and 2 get a bye.`,
+    `Earlier weeks: picking a week rebuilds everything from the games played up to that week, so you see the odds as they stood then.`,
+    `Not included: injuries, trades, waiver pickups, bye weeks and player projections. A team whose roster changed a lot is judged on the points its old roster scored.`,
+  ].map(s => `<li>${s}</li>`).join("");
+}
+
+function render() {
+  renderHeader(); renderRanking(); renderAllPlay(); renderHeat(); renderLuck(); renderSchedule(); renderTeam(); renderMethod();
+}
+
+function setWeek(k) {
+  week = k;
+  try { history.replaceState(null, "", k === L.done_week ? location.pathname : "#w" + k); } catch (e) {}
+  render();
+}
+
+document.getElementById("weeks").addEventListener("click", e => { const b = e.target.closest("button[data-week]"); if (b) setWeek(+b.dataset.week); });
+document.getElementById("teamsel").addEventListener("change", e => { teamId = +e.target.value; try { localStorage.setItem("team", teamId); } catch (x) {} renderTeam(); });
+const sched = document.getElementById("sched");
+const openTeam = el => { teamId = +el.dataset.id; renderTeam(); document.getElementById("teamsec").scrollIntoView({ behavior: "smooth" }); };
+sched.addEventListener("click", e => { const el = e.target.closest("[data-id]"); if (el) openTeam(el); });
+sched.addEventListener("keydown", e => { const el = e.target.closest("[data-id]"); if (el && e.key === "Enter") openTeam(el); });
+
+const hw = /^#w(\d+)$/.exec(location.hash);
+if (hw && D.snapshots[+hw[1]]) week = +hw[1];
+try { const s = +localStorage.getItem("team"); if (T[s]) teamId = s; } catch (e) {}
+if (teamId == null) teamId = order()[0].id;
+render();
+</script>
+</body>
+</html>
