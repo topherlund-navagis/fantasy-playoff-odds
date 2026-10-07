@@ -54,7 +54,7 @@ header::after { content: ""; position: absolute; left: 0; right: 0; bottom: -10p
 .stripe { display: flex; gap: 6px; }
 .stripe i { width: 34px; height: 6px; background: var(--fg); transform: skewX(-30deg); }
 .stripe i:nth-child(2) { background: var(--red); }
-section { display: grid; gap: 14px; min-width: 0; }
+section { display: grid; gap: 14px; min-width: 0; scroll-margin-top: 70px; }
 .note { color: var(--muted); font-size: .94rem; }
 
 /* week selector */
@@ -71,7 +71,7 @@ button:focus-visible, select:focus-visible, [data-id]:focus-visible { outline: 2
 table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
 th, td { padding: 9px 10px; text-align: right; border-bottom: 1px solid var(--line); }
 td { white-space: nowrap; }
-td.wrap { white-space: normal; overflow-wrap: anywhere; }
+td.wrap { white-space: normal; overflow-wrap: break-word; }
 thead th { font: 700 .84rem/1.15 var(--display); letter-spacing: .08em; text-transform: uppercase; color: var(--fg); background: var(--panel2); vertical-align: bottom; border-bottom: 3px solid var(--red); }
 th.l, td.l { text-align: left; }
 tbody tr:nth-child(even) td { background: rgba(255,255,255,.025); }
@@ -394,10 +394,10 @@ function renderAllPlay() {
     <div><b>${top.beat}-${top.lost}</b><span>${esc(top.t.name)} had the top score (${f1(top.me)}), so it beat everyone.</span></div>
     <div><b>${ex.beat}-${ex.lost}</b><span>${esc(ex.t.name)} had the 5th-best score (${f1(ex.me)}): ${ex.beat} teams below it, ${ex.lost} above.</span></div>
     <div><b>${lucky.length} lucky, ${unlucky.length} unlucky</b><span>Bottom-half scores that still won, and top-half scores that still lost. The red line splits the top and bottom half.</span></div>`;
-  let h = `<thead><tr><th class="l">Team</th><th>Score</th><th>All-play</th><th class="l">Real result</th></tr></thead><tbody>`;
+  let h = `<thead><tr><th class="l">Team</th><th>All-play</th><th class="l">Score and result</th></tr></thead><tbody>`;
   rows.forEach((x, i) => {
     const tag = lucky.includes(x) ? `<span class="tag lucky">Lucky win</span>` : unlucky.includes(x) ? `<span class="tag unlucky">Unlucky loss</span>` : "";
-    h += `<tr class="${i === Math.floor(L.teams / 2) - 1 ? "cut" : ""}"><td class="l team wrap">${i + 1}. ${esc(x.t.name)}</td><td>${f1(x.me)}</td><td>${x.beat}-${x.lost}</td>
+    h += `<tr class="${i === Math.floor(L.teams / 2) - 1 ? "cut" : ""}"><td class="l team wrap">${i + 1}. ${esc(x.t.name)}</td><td>${x.beat}-${x.lost}</td>
       <td class="l wrap"><span class="res ${x.r.res}">${x.r.res} ${f1(x.r.pf)}–${f1(x.r.pa)}</span><span class="owner">vs ${esc(T[x.r.opp].name)}</span>${tag}</td></tr>`;
   });
   document.getElementById("aptable").innerHTML = h + "</tbody>";
